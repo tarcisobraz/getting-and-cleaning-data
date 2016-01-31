@@ -51,6 +51,11 @@ set.activity.labels <- function(selected.set) {
   selected.set
 }
 
+summarize.data <- function(data) {
+  reshaped.set <- melt(data, id=c("activity", "subject"))
+  summary.set <- dcast(reshaped.set, activity + subject ~ variable, mean)  
+}
+
 #Task #1 - Merges the training and the test sets to create one data set.
 #Task #4 - Appropriately labels the data set with descriptive variable names.
 full.set <- assemble.full.dataset("train","test", "features.txt")
@@ -62,7 +67,6 @@ selected.set <- select.desired.features(full.set)
 selected.set <- set.activity.labels(selected.set)
 
 #Task #5 - From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.
-reshaped.set <- melt(selected.set, id=c("activity", "subject"))
-summary.set <- dcast(reshaped.set, activity + subject ~ variable, mean)
+summary.set <- summarize.data(selected.set)
 
 write.table(x = summary.set, file="tidy.dataset.txt", row.names = FALSE)
